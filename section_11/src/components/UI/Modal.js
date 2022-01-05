@@ -3,7 +3,9 @@ import ReactDOM from "react-dom";
 import classes from "./Modal.module.css";
 
 const Backdrop = (props) => {
-  return <div onClick={props.onClikCart} className={classes.backdrop} />;
+  // context로 데이터를 넘기지 않은 경우
+  // 모달은 여러군데에서 사용할 수 있어 context로 함수를 넘긴다면 특정 기능의 역할만 하게된다.
+  return <div className={classes.backdrop} onClick={props.onClose} />;
 };
 
 const ModalOverlay = (props) => {
@@ -20,7 +22,7 @@ const Modal = (props) => {
   return (
     <Fragment>
       {ReactDOM.createPortal(
-        <Backdrop onClikCart={props.onClikCart} />,
+        <Backdrop onClose={props.onClose} />,
         portalElement
       )}
       {ReactDOM.createPortal(

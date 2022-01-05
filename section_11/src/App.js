@@ -3,16 +3,20 @@ import Cart from "./components/Cart/Cart";
 import Header from "./components/Layout/Header";
 import Meals from "./components/Meals/Meals";
 function App() {
-  const [isCartModal, setIsCartModal] = useState(false);
+  const [cartIsShown, setcartIsShown] = useState(false);
 
-  const isCartModalHandler = () => {
-    setIsCartModal(!isCartModal);
+  const showCartHandler = () => {
+    setcartIsShown(true);
+  };
+
+  const hideCartHandler = () => {
+    setcartIsShown(false);
   };
 
   return (
     <Fragment>
-      <Cart isCartModal={isCartModal} onCartHandler={isCartModalHandler} />
-      <Header onCartHandler={isCartModalHandler} />
+      {cartIsShown && <Cart onClose={hideCartHandler} />}
+      <Header onShowCart={showCartHandler} />
       <main>
         <Meals />
       </main>
