@@ -1,4 +1,4 @@
-import { useState } from "react";
+import useBasicInput from "../hooks/use-basic-input";
 /**
  * [x] 유저의 입력 값을 받아온다
  * [x] 유저가 submit 했을 때 입력값이 조건에 맞지 않으면 에러를 띄운다.
@@ -7,39 +7,46 @@ import { useState } from "react";
  */
 
 const BasicForm = (props) => {
-  const [enteredFName, setEnteredFName] = useState("");
-  const [fNameInputTouched, setFNameInputTouched] = useState(false);
+  const {
+    value: enteredFName,
+    hasError: FNameHasError,
+    inputChangeHandler: enteredFNameChangeHandler,
+    inputBlurHandler: fNameBlurHandler,
+    valueInputClasses: firstNameInputClasses,
+    reset: firstNameReset,
+    valueIsValid: fNameIsValid,
+  } = useBasicInput((value) => value.trim() !== "");
 
-  const fNameIsValid = enteredFName.trim() !== "";
+  const {
+    value: enteredLastName,
+    hasError: LastNameHasError,
+    inputChangeHandler: enteredLastNameChangeHandler,
+    inputBlurHandler: lastNameBlurHandler,
+    valueInputClasses: lastNameInputClasses,
+    reset: lastNameReset,
+    valueIsValid: lastNameIsValid,
+  } = useBasicInput((value) => value.trim() !== "");
 
-  const FNameHasError = !fNameIsValid && fNameInputTouched;
+  let isFormValid = false;
 
-  const enteredFNameChangeHandler = (event) => {
-    setEnteredFName(event.target.value);
-  };
-
-  const fNameBlurHandler = () => {
-    setFNameInputTouched(true);
-  };
+  if (fNameIsValid && lastNameIsValid) {
+    isFormValid = true;
+  }
 
   const formSubmitHandler = (event) => {
     event.preventDefault();
-    setFNameInputTouched(true);
-    if (!fNameIsValid) {
+
+    if (!isFormValid) {
       return;
     }
-    setFNameInputTouched(false);
-    setEnteredFName("");
+    lastNameReset();
+    firstNameReset();
   };
-
-  const fNameInputClasses = FNameHasError
-    ? "form-control invalid"
-    : "form-control";
 
   return (
     <form onSubmit={formSubmitHandler}>
       <div className="control-group">
-        <div className={fNameInputClasses}>
+        <div className={firstNameInputClasses}>
           <label htmlFor="name">First Name</label>
           <input
             type="text"
@@ -52,9 +59,18 @@ const BasicForm = (props) => {
             <p className="error-text">이름값은 공백이 안됩니다.</p>
           )}
         </div>
-        <div className="form-control">
+        <div className={lastNameInputClasses}>
           <label htmlFor="name">Last Name</label>
-          <input type="text" id="name" />
+          <input
+            type="text"
+            id="name"
+            value={enteredLastName}
+            onChange={enteredLastNameChangeHandler}
+            onBlur={lastNameBlurHandler}
+          />
+          {LastNameHasError && (
+            <p className="error-text">이름값은 공백이 안됩니다.</p>
+          )}
         </div>
       </div>
       <div className="form-control">
@@ -62,7 +78,7 @@ const BasicForm = (props) => {
         <input type="text" id="name" />
       </div>
       <div className="form-actions">
-        <button>Submit</button>
+        <button disabled={!isFormValid}>Submit</button>
       </div>
     </form>
   );
