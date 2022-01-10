@@ -1,36 +1,38 @@
-import Card from '../UI/Card';
-import MealItem from './MealItem/MealItem';
-import classes from './AvailableMeals.module.css';
-
-const DUMMY_MEALS = [
-  {
-    id: 'm1',
-    name: 'Sushi',
-    description: 'Finest fish and veggies',
-    price: 22.99,
-  },
-  {
-    id: 'm2',
-    name: 'Schnitzel',
-    description: 'A german specialty!',
-    price: 16.5,
-  },
-  {
-    id: 'm3',
-    name: 'Barbecue Burger',
-    description: 'American, raw, meaty',
-    price: 12.99,
-  },
-  {
-    id: 'm4',
-    name: 'Green Bowl',
-    description: 'Healthy...and green...',
-    price: 18.99,
-  },
-];
+import { useEffect, useState } from "react";
+import Card from "../UI/Card";
+import MealItem from "./MealItem/MealItem";
+import classes from "./AvailableMeals.module.css";
 
 const AvailableMeals = () => {
-  const mealsList = DUMMY_MEALS.map((meal) => (
+  const [mealsArray, setMealsArray] = useState([]);
+  const getMeal = async () => {
+    const response = await fetch(
+      "https://reatc-http-default-rtdb.firebaseio.com/meals.json"
+    );
+    if (!response.ok) {
+      alert("에러발생");
+    }
+    const data = await response.json();
+    console.log(data);
+    const loadedMeal = [];
+    for (const meal in data) {
+      console.log(data[meal].price);
+      loadedMeal.push({
+        id: data[meal].id,
+        name: data[meal].name,
+        description: data[meal].description,
+        price: data[meal].price,
+      });
+    }
+    console.log(loadedMeal);
+    setMealsArray(loadedMeal);
+  };
+
+  useEffect(() => {
+    getMeal();
+  }, []);
+
+  const mealsList = mealsArray.map((meal) => (
     <MealItem
       key={meal.id}
       id={meal.id}
