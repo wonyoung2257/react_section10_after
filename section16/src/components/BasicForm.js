@@ -1,84 +1,100 @@
-import useBasicInput from "../hooks/use-basic-input";
-/**
- * [x] 유저의 입력 값을 받아온다
- * [x] 유저가 submit 했을 때 입력값이 조건에 맞지 않으면 에러를 띄운다.
- * [] 입력을 아무것도 하지 않은 상태에서 에러가 나오는 것 수정하기
- *
- */
+import useInput from "../hooks/use-input";
+
+const isNotEmpty = (value) => value.trim() !== "";
+const isEmail = (value) => value.includes("@");
 
 const BasicForm = (props) => {
   const {
-    value: enteredFName,
-    hasError: FNameHasError,
-    inputChangeHandler: enteredFNameChangeHandler,
-    inputBlurHandler: fNameBlurHandler,
-    valueInputClasses: firstNameInputClasses,
-    reset: firstNameReset,
-    valueIsValid: fNameIsValid,
-  } = useBasicInput((value) => value.trim() !== "");
-
+    value: firstNameValue,
+    isValid: firstNameValid,
+    hasError: firstNameHasError,
+    valueChangeHandler: firstNameChangeHandler,
+    inputBlurHandler: firstNameInputBlurHandler,
+    reset: resetFirstName,
+  } = useInput(isNotEmpty);
   const {
-    value: enteredLastName,
-    hasError: LastNameHasError,
-    inputChangeHandler: enteredLastNameChangeHandler,
-    inputBlurHandler: lastNameBlurHandler,
-    valueInputClasses: lastNameInputClasses,
-    reset: lastNameReset,
-    valueIsValid: lastNameIsValid,
-  } = useBasicInput((value) => value.trim() !== "");
+    value: lastNameValue,
+    isValid: lastNameValid,
+    hasError: lastNameHasError,
+    valueChangeHandler: lastNameChangeHandler,
+    inputBlurHandler: lastNameInputBlurHandler,
+    reset: resetLastName,
+  } = useInput(isNotEmpty);
+  const {
+    value: emailValue,
+    isValid: emailValid,
+    hasError: emailHasError,
+    valueChangeHandler: emailChangeHandler,
+    inputBlurHandler: emailInputBlurHandler,
+    reset: resetEmail,
+  } = useInput(isEmail);
 
-  let isFormValid = false;
+  let formIsValid = false;
 
-  if (fNameIsValid && lastNameIsValid) {
-    isFormValid = true;
+  if (firstNameValid && lastNameValid && emailValid) {
+    formIsValid = true;
   }
 
   const formSubmitHandler = (event) => {
     event.preventDefault();
 
-    if (!isFormValid) {
+    if (!formIsValid) {
       return;
     }
-    lastNameReset();
-    firstNameReset();
+
+    console.log("sumbitted");
+    resetEmail();
+    resetFirstName();
+    resetLastName();
   };
+
+  const firstNameClasses = firstNameHasError
+    ? "form-control invalid"
+    : "form-control";
+  const lastNameClasses = lastNameHasError
+    ? "form-control invalid"
+    : "form-control";
+  const emailClasses = emailHasError ? "form-control invalid" : "form-control";
 
   return (
     <form onSubmit={formSubmitHandler}>
       <div className="control-group">
-        <div className={firstNameInputClasses}>
+        <div className={firstNameClasses}>
           <label htmlFor="name">First Name</label>
           <input
             type="text"
             id="name"
-            value={enteredFName}
-            onChange={enteredFNameChangeHandler}
-            onBlur={fNameBlurHandler}
+            value={firstNameValue}
+            onChange={firstNameChangeHandler}
+            onBlur={firstNameInputBlurHandler}
           />
-          {FNameHasError && (
-            <p className="error-text">이름값은 공백이 안됩니다.</p>
-          )}
+          {firstNameHasError && <p>first name 똑바로 입력</p>}
         </div>
-        <div className={lastNameInputClasses}>
+        <div className={lastNameClasses}>
           <label htmlFor="name">Last Name</label>
           <input
             type="text"
             id="name"
-            value={enteredLastName}
-            onChange={enteredLastNameChangeHandler}
-            onBlur={lastNameBlurHandler}
+            value={lastNameValue}
+            onChange={lastNameChangeHandler}
+            onBlur={lastNameInputBlurHandler}
           />
-          {LastNameHasError && (
-            <p className="error-text">이름값은 공백이 안됩니다.</p>
-          )}
+          {lastNameHasError && <p>last name 똑바로 입력</p>}
         </div>
       </div>
-      <div className="form-control">
+      <div className={emailClasses}>
         <label htmlFor="name">E-Mail Address</label>
-        <input type="text" id="name" />
+        <input
+          type="text"
+          id="name"
+          value={emailValue}
+          onChange={emailChangeHandler}
+          onBlur={emailInputBlurHandler}
+        />
+        {emailHasError && <p>email 똑바로 입력</p>}
       </div>
       <div className="form-actions">
-        <button disabled={!isFormValid}>Submit</button>
+        <button disabled={!formIsValid}>Submit</button>
       </div>
     </form>
   );
