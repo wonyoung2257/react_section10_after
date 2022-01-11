@@ -47,6 +47,7 @@ const Checkout = (props) => {
     if (!formIsValied) {
       return;
     }
+
     resetName();
     resetStreet();
     resetPostal();
