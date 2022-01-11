@@ -25,7 +25,7 @@ const AvailableMeals = () => {
 
       for (const meal in data) {
         loadedMeal.push({
-          id: data[meal].id,
+          id: meal,
           name: data[meal].name,
           description: data[meal].description,
           price: data[meal].price,
