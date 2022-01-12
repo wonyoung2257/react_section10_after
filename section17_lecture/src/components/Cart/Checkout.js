@@ -42,7 +42,7 @@ const Checkout = (props) => {
       enteredPostalCodeValid &&
       enteredStreetValid;
 
-    if (formIsValid) {
+    if (!formIsValid) {
       return;
     }
     props.onConfirm({
