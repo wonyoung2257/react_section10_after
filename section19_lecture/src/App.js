@@ -58,6 +58,7 @@ function App() {
       );
     });
   }, [cart, dispatch]);
+
   return (
     <Fragment>
       {notification && (
