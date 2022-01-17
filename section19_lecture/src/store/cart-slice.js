@@ -1,7 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { uiActions } from "./ui-slice";
-
 const cartSlice = createSlice({
   name: "cart",
   initialState: { items: [], totalQuantity: 0 },
@@ -40,51 +38,6 @@ const cartSlice = createSlice({
     },
   },
 });
-
-export const sendCartData = (cart) => {
-  //이 함수는 reducer 에서 실행되지 않는다 .
-  return async (dispatch) => {
-    dispatch(
-      uiActions.showNotification({
-        status: "padding",
-        title: "Sending...",
-        message: "Sending cart data!",
-      })
-    );
-    const sendRequest = async () => {
-      const responce = await fetch(
-        "https://reatc-http-default-rtdb.firebaseio.com/cart.json",
-        {
-          method: "PUT",
-          body: JSON.stringify(cart),
-        }
-      );
-      if (!responce.ok) {
-        throw new Error("에러발생함");
-      }
-    };
-
-    try {
-      await sendRequest();
-
-      dispatch(
-        uiActions.showNotification({
-          status: "success",
-          title: "success!",
-          message: "장바구니 데이터 보내는데 성공함",
-        })
-      );
-    } catch (error) {
-      dispatch(
-        uiActions.showNotification({
-          status: "error",
-          title: "Error!!",
-          message: "장바구니 데이터 보내는데 에러남",
-        })
-      );
-    }
-  };
-};
 
 export const cartActions = cartSlice.actions;
 export default cartSlice;
